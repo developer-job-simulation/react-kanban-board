@@ -1,5 +1,5 @@
 {
-  "name": "react-typescript",
+  "name": "react-kanban-board",
   "version": "1.0.0",
   "type": "module",
   "description": "React TypeScript, using Vite bundler",
@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "keywords": [],
-  "author": "",
+  "author": "CodebaseMentor.com",
   "license": "ISC",
   "devDependencies": {
     "@types/react": "^18.0.15",
