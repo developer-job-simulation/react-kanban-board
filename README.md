@@ -6,13 +6,9 @@
 
 This is an advanced project in React that allows you to create a dynamic and interactive Kanban board. However, it currently has several issues that need to be resolved:
 
-1. The tasks aren't fetched from the server.
-2. The application doesn't handle the onDragStart, onDragOver, onDrop, and onDragEnd events.
-   1. Implement handleTaskDragStart, handleTaskDragOver, handleTaskDrop, and handleTaskDragEnd to handle the drag-and-drop events.
-   2. Make sure the application doesn't incorrectly show duplicate tasks when dragged over themselves.
-   3. Make sure the application doesn't leave a lingering task when dragged over a column but dropped elsewhere.
-   4. Make sure the application doesn't delete a task that is dragged over it's current column.
-3. Task changes aren't being sent to the server.
+1. [Tasks aren't fetched from the server.](https://github.com/developer-job-simulation/react-kanban-board/issues/2)
+2. [The application doesn't handle the onDragStart, onDragOver, onDrop, and onDragEnd events.](https://github.com/developer-job-simulation/react-kanban-board/issues/3)
+3. [Task changes aren't being stored server side, so changes are lost during refresh.](https://github.com/developer-job-simulation/react-kanban-board/issues/4)
 
 ## Learning Objectives
 
