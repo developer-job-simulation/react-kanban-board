@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-import KanbanColumn from "./components/KanbanColumn";
-import { Column, DraggableTask, DraggedTaskInfo, Task } from "./types";
+import React, { useEffect, useState } from 'react';
+import './App.css';
+import KanbanColumn from './components/KanbanColumn';
+import { Column, DraggableTask, DraggedTaskInfo, Task } from './types';
+import { fetchKanbanTasks } from './api/index';
 
 export default function App() {
-  const [kanbanColumns, setKanbanColumns] = useState<Record<Column, DraggableTask[]>>({
+  const [kanbanColumns, setKanbanColumns] = useState<
+    Record<Column, DraggableTask[]>
+  >({
     Backlog: [],
-    "In Progress": [],
-    "In Review": [],
+    'In Progress': [],
+    'In Review': [],
     Done: [],
   });
 
@@ -15,10 +18,14 @@ export default function App() {
   useEffect(() => {
     // TODO: Pull state from json-server
     // Hint: You may want to use the fetchTasks function from api/index.tsx
+    fetchKanbanTasks().then((tasks) => {
+      setKanbanColumns(tasks);
+    });
   }, []);
 
   // Hint: You will need these states for dragging and dropping tasks
-  const [draggedTaskInfo, setDraggedTaskInfo] = useState<DraggedTaskInfo | null>(null);
+  const [draggedTaskInfo, setDraggedTaskInfo] =
+    useState<DraggedTaskInfo | null>(null);
   const [hoveredColumn, setHoveredColumn] = useState<Column | null>(null);
 
   const handleTaskDragStart = (task: Task, column: Column) => {
@@ -39,7 +46,11 @@ export default function App() {
   const getTasksForColumn = (column: Column): DraggableTask[] => {
     // TODO: Handle the bug where card dragged over itself shows duplicate
     // Hint: Consider how you can use the dragInfo and overColumn states to prevent this
-    return [{ id: "1", name: "Task 1", isDragging: false }];
+    let tasksForColumns = kanbanColumns[column].map((element) => {
+      element.isDragging = false;
+      return element;
+    });
+    return tasksForColumns;
   };
 
   const handleTaskDragEnd = () => {
@@ -49,11 +60,13 @@ export default function App() {
 
   return (
     <main className="overflow-x-auto">
-      <h1 className="text-left text-4xl font-bold p-10 pb-0">Codebase Mentor Kanban Board</h1>
+      <h1 className="text-left text-4xl font-bold p-10 pb-0">
+        Codebase Mentor Kanban Board
+      </h1>
       <div className="flex justify-between p-10 gap-x-4 min-w-max">
         <KanbanColumn
           title="Backlog"
-          tasks={getTasksForColumn("Backlog")}
+          tasks={getTasksForColumn('Backlog')}
           onTaskDragStart={handleTaskDragStart}
           onTaskDragOver={handleTaskDragOver}
           onTaskDrop={handleTaskDrop}
@@ -61,7 +74,7 @@ export default function App() {
         />
         <KanbanColumn
           title="In Progress"
-          tasks={getTasksForColumn("In Progress")}
+          tasks={getTasksForColumn('In Progress')}
           onTaskDragStart={handleTaskDragStart}
           onTaskDragOver={handleTaskDragOver}
           onTaskDrop={handleTaskDrop}
@@ -69,7 +82,7 @@ export default function App() {
         />
         <KanbanColumn
           title="In Review"
-          tasks={getTasksForColumn("In Review")}
+          tasks={getTasksForColumn('In Review')}
           onTaskDragStart={handleTaskDragStart}
           onTaskDragOver={handleTaskDragOver}
           onTaskDrop={handleTaskDrop}
@@ -77,7 +90,7 @@ export default function App() {
         />
         <KanbanColumn
           title="Done"
-          tasks={getTasksForColumn("Done")}
+          tasks={getTasksForColumn('Done')}
           onTaskDragStart={handleTaskDragStart}
           onTaskDragOver={handleTaskDragOver}
           onTaskDrop={handleTaskDrop}

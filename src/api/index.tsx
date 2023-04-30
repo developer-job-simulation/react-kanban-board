@@ -2,6 +2,10 @@ const apiUrl = "http://localhost:3001";
 
 export const fetchKanbanTasks = async () => {
   // TODO: Implement functionality to fetch tasks from the server
+   
+      const tasks = await(await fetch(`${apiUrl}/tasks`)).json();
+      return tasks
+        
 };
 
 export const updateKanbanTasks = async (tasks: any) => {

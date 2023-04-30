@@ -1,5 +1,5 @@
-import React from "react";
-import { Column, DraggableTask, Task } from "../types";
+import React from 'react';
+import { Column, DraggableTask, Task } from '../types';
 
 interface KanbanColumnProps {
   title: Column;
@@ -29,7 +29,9 @@ export default function KanbanColumn({
         {tasks.map((task) => (
           <li
             key={task.id}
-            className={`bg-white p-2 rounded mb-2 shadow ${task.isDragging ? "opacity-50" : ""}`}
+            className={`bg-white p-2 rounded cursor-pointer mb-2 shadow ${
+              task.isDragging ? 'opacity-50' : ''
+            }`}
             draggable
             onDragStart={() => onTaskDragStart(task, title)}
             onDragEnd={onTaskDragEnd}
