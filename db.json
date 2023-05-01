@@ -6,14 +6,14 @@
         "name": "Design mockups"
       },
       {
-        "id": "task3",
-        "name": "Develop features"
+        "id": "task1",
+        "name": "Write specs"
       }
     ],
     "In Progress": [
       {
-        "id": "task1",
-        "name": "Write specs"
+        "id": "task3",
+        "name": "Develop features"
       }
     ],
     "In Review": [

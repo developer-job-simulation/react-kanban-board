@@ -47,12 +47,13 @@ export default function App() {
 
       localStorage.setItem('initialdata', JSON.stringify(tempo_item));
       setKanbanColumns(tempo_item);
-      // const requestOptions = {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(tempo_item),
-      // };
-      // fetch('http://localhost:3001/tasks', requestOptions);
+      setCreatePlaceholder(false);
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tempo_item),
+      };
+      fetch('http://localhost:3001/tasks', requestOptions);
     }
   };
 
@@ -78,12 +79,12 @@ export default function App() {
 
     if (draggedTaskInfo?.column !== column) {
       setCreatePlaceholder(true);
-      setHoveredColumn(column)
+      setHoveredColumn(column);
       console.log(createplaceholder);
     } else {
       setCreatePlaceholder(false);
       console.log(createplaceholder);
-      setHoveredColumn(column)
+      setHoveredColumn(column);
     }
   };
 
