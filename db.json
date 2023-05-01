@@ -2,20 +2,6 @@
   "tasks": {
     "Backlog": [
       {
-        "id": "task4",
-        "name": "Test application"
-      },
-      {
-        "id": "task1",
-        "name": "Write specs ded"
-      }
-    ],
-    "In Progress": [
-      {
-        "id": "task5",
-        "name": "Deploy application"
-      },
-      {
         "id": "task2",
         "name": "Design mockups"
       },
@@ -24,7 +10,23 @@
         "name": "Develop features"
       }
     ],
-    "In Review": [],
-    "Done": []
+    "In Progress": [
+      {
+        "id": "task1",
+        "name": "Write specs"
+      }
+    ],
+    "In Review": [
+      {
+        "id": "task4",
+        "name": "Test application"
+      }
+    ],
+    "Done": [
+      {
+        "id": "task5",
+        "name": "Deploy application"
+      }
+    ]
   }
 }

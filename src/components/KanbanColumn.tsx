@@ -1,14 +1,17 @@
-import React,{useEffect} from 'react';
-import { Column, DraggableTask, Task } from '../types';
+import React, { useEffect } from 'react';
+import { Column, DraggableTask, DraggedTaskInfo, Task } from '../types';
 
 interface KanbanColumnProps {
   title: Column;
   tasks: DraggableTask[];
-  onTaskDragStart: (task: Task, column: Column, e:React.DragEvent) => void;
+  onTaskDragStart: (task: Task, column: Column, e: React.DragEvent) => void;
   onTaskDragOver: (e: React.DragEvent, column: Column) => void;
   onTaskDrop: (e: React.DragEvent, column: Column) => void;
-  onTaskDragEnd: () => void;
+  createplaceholder: boolean;
+  draggedTaskInfo: DraggedTaskInfo | null;
+  hoveredColumn: Column | null;
 
+  // onTaskDragEnd: () => void;
 }
 
 export default function KanbanColumn({
@@ -17,32 +20,46 @@ export default function KanbanColumn({
   onTaskDragStart,
   onTaskDragOver,
   onTaskDrop,
-  onTaskDragEnd
-}: KanbanColumnProps) {
-    
-    
+  createplaceholder,
+  draggedTaskInfo,
+  hoveredColumn,
+}: // onTaskDragEnd,
+
+KanbanColumnProps) {
+  useEffect(() => {
+    console.log(createplaceholder);
+  }, [createplaceholder]);
+
   return (
     <div
       className="flex flex-col w-1/4 min-w-[300px] bg-gray-200 rounded p-4"
       onDragOver={(e) => onTaskDragOver(e, title)}
       onDrop={(e) => onTaskDrop(e, title)}
-      
     >
       <h2 className="font-bold mb-2">{title}</h2>
       <ul>
-        {tasks.map((task, index) => (
+        {tasks.map((task) => (
           <li
             key={task.id}
             className={`bg-white p-2 rounded cursor-pointer mb-2 shadow ${
               task.isDragging ? 'opacity-50' : ''
             }`}
             draggable
-            onDragStart={(e) => onTaskDragStart(task, title,e)}
-            onDragEnd={onTaskDragEnd}
+            onDragStart={(e) => onTaskDragStart(task, title, e)}
+            // onDragEnd={onTaskDragEnd}
           >
             {task.name}
           </li>
         ))}
+        {createplaceholder && draggedTaskInfo && hoveredColumn === title ? (
+          <li
+            className={`bg-white p-2 rounded cursor-pointer mb-2 shadow ${'opacity-50'}`}
+          >
+            {draggedTaskInfo.task.name}
+          </li>
+        ) : (
+          <li></li>
+        )}
       </ul>
     </div>
   );
