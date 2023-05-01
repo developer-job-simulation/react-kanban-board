@@ -11,4 +11,6 @@ export const fetchKanbanTasks = async () => {
 export const updateKanbanTasks = async (tasks: any) => {
   // TODO: Save the new order of the items when tasks are modified to the server
   // Hint: You may want to use the fetch API with a "PUT" method
+
+
 };
