@@ -29,6 +29,28 @@ export default function App() {
 
   const [hoveredColumn, setHoveredColumn] = useState<Column | null>(null);
 
+  const updateColumns = (e: React.DragEvent, column: Column) => {
+    let newColumns = kanbanColumns;
+    if (draggedTaskInfo) {
+      let sourceCln = e.dataTransfer.getData('sourceColumn');
+      newColumns[sourceCln].splice(
+        newColumns[sourceCln].findIndex(function (element: Task) {
+          return element.id === draggedTaskInfo.task.id;
+        }),
+        1
+      );
+      newColumns[column].push(draggedTaskInfo.task);
+      console.log();
+
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(kanbanColumns),
+      };
+      fetch('http://localhost:3001/tasks', requestOptions);
+    }
+  };
+
   const handleTaskDragStart = (
     task: DraggableTask,
     column: Column,
@@ -54,37 +76,19 @@ export default function App() {
     e.preventDefault();
     // TODO: Implement functionality for when the item is dropped
     // Hint: Make sure to handle the cases when the item is dropped in the same column or in a new column
-    let sourceCln = e.dataTransfer.getData('sourceColumn');
 
     if (column === 'Backlog') {
       if (draggedTaskInfo?.column === 'Backlog') return;
-      let newColumns = kanbanColumns;
-      if (draggedTaskInfo) {
-        newColumns[sourceCln].splice(
-          newColumns[sourceCln].findIndex(function (element) {
-            return element.id === draggedTaskInfo.task.id;
-          }),
-          1
-        );
-        newColumns[column].push(draggedTaskInfo.task);
-        console.log();
-
-        const requestOptions = {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(kanbanColumns),
-        };
-        fetch('http://localhost:3001/tasks', requestOptions);
-      }
+      updateColumns(e, column);
     } else if (column === 'In Progress') {
       if (draggedTaskInfo?.column === 'In Progress') return;
-      console.log(draggedTaskInfo);
+      updateColumns(e, column);
     } else if (column === 'In Review') {
       if (draggedTaskInfo?.column === 'In Review') return;
-      console.log(draggedTaskInfo);
+      updateColumns(e, column);
     } else if (column === 'Done') {
       if (draggedTaskInfo?.column === 'Done') return;
-      console.log(draggedTaskInfo);
+      updateColumns(e, column);
     }
   };
 
