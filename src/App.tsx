@@ -18,6 +18,7 @@ export default function App() {
     fetchKanbanTasks().then((tasks) => {
       setKanbanColumns(tasks);
       localStorage.setItem('initialdata', JSON.stringify(tasks));
+      
     });
   }, []);
   const [createplaceholder, setCreatePlaceholder] = useState<boolean>(false);

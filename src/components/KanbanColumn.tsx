@@ -32,26 +32,25 @@ export default function KanbanColumn({
     >
       <h2 className="font-bold mb-2">{title}</h2>
       <ul>
-        {tasks && tasks.map((task) => (
-          <li
-            key={task.id}
-            className={`bg-white p-2 rounded cursor-pointer mb-2 shadow ${
-              task.isDragging ? 'opacity-50' : ''
-            }`}
-            draggable
-            onDragStart={(e) => onTaskDragStart(task, title, e)}
-          >
-            {task.name}
-          </li>
-        ))}
-        {createplaceholder && draggedTaskInfo && hoveredColumn === title ? (
+        {tasks &&
+          tasks.map((task) => (
+            <li
+              key={task.id}
+              className={`bg-white p-2 rounded cursor-pointer mb-2 shadow ${
+                task.isDragging ? 'opacity-50' : ''
+              }`}
+              draggable
+              onDragStart={(e) => onTaskDragStart(task, title, e)}
+            >
+              {task.name}
+            </li>
+          ))}
+        {createplaceholder && draggedTaskInfo && hoveredColumn === title && (
           <li
             className={`bg-white p-2 rounded cursor-pointer mb-2 shadow ${'opacity-50'}`}
           >
             {draggedTaskInfo.task.name}
           </li>
-        ) : (
-          <li></li>
         )}
       </ul>
     </div>
