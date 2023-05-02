@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import KanbanColumn from './components/KanbanColumn';
 import { Column, DraggableTask, DraggedTaskInfo, Task } from './types';
-import { fetchKanbanTasks } from './api/index';
+import { fetchKanbanTasks, updateKanbanTasks } from './api/index';
 
 export default function App() {
   const [kanbanColumns, setKanbanColumns] = useState<
@@ -14,13 +14,9 @@ export default function App() {
     Done: [],
   });
 
-  // Fetch Tasks
   useEffect(() => {
-    // TODO: Pull state from json-server
-    // Hint: You may want to use the fetchTasks function from api/index.tsx
     fetchKanbanTasks().then((tasks) => {
       setKanbanColumns(tasks);
-      console.log('rerended');
       localStorage.setItem('initialdata', JSON.stringify(tasks));
     });
   }, []);
@@ -28,7 +24,6 @@ export default function App() {
 
   let tempo_item = JSON.parse(localStorage.getItem('initialdata') || '');
 
-  // Hint: You will need these states for dragging and dropping tasks
   const [draggedTaskInfo, setDraggedTaskInfo] =
     useState<DraggedTaskInfo | null>(null);
 
@@ -53,7 +48,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tempo_item),
       };
-      fetch('http://localhost:3001/tasks', requestOptions);
+      updateKanbanTasks(requestOptions);
     }
   };
 
@@ -62,37 +57,26 @@ export default function App() {
     column: Column,
     e: React.DragEvent
   ) => {
-    // TODO: Implement functionality for when the drag starts
     let neededInfo = { task, column };
-
     e.dataTransfer.setData('sourceColumn', neededInfo.column);
-
     setDraggedTaskInfo({ task, column });
   };
 
   const handleTaskDragOver = (e: React.DragEvent, column: Column) => {
     e.preventDefault();
-    // TODO: Implement functionality for when an item is being dragged over a column
-    // Hint: Remember to check if the item is being dragged over a new column
-    // console.log('item is being dragged over a column', e);
-    // setHoveredColumn(column)
 
     if (draggedTaskInfo?.column !== column) {
       setCreatePlaceholder(true);
       setHoveredColumn(column);
-      console.log(createplaceholder);
     } else {
       setCreatePlaceholder(false);
-      console.log(createplaceholder);
+
       setHoveredColumn(column);
     }
   };
 
   const handleTaskDrop = (e: React.DragEvent, column: Column) => {
     e.preventDefault();
-
-    // TODO: Implement functionality for when the item is dropped
-    // Hint: Make sure to handle the cases when the item is dropped in the same column or in a new column
 
     if (column === 'Backlog') {
       if (draggedTaskInfo?.column === 'Backlog') return;
@@ -110,16 +94,9 @@ export default function App() {
   };
 
   const getTasksForColumn = (column: Column): DraggableTask[] => {
-    // TODO: Handle the bug where card dragged over itself shows duplicate
-    // Hint: Consider how you can use the dragInfo and overColumn states to prevent this
-
     return kanbanColumns[column];
   };
 
-  const handleTaskDragEnd = () => {
-    // TODO: Implement functionality for when the drag ends
-    // Hint: Remember to handle the case when the item is released back to its current column
-  };
   return (
     <main className="overflow-x-auto">
       <h1 className="text-left text-4xl font-bold p-10 pb-0">
@@ -135,8 +112,6 @@ export default function App() {
           createplaceholder={createplaceholder}
           draggedTaskInfo={draggedTaskInfo}
           hoveredColumn={hoveredColumn}
-
-          // onTaskDragEnd={handleTaskDragEnd}
         />
         <KanbanColumn
           title="In Progress"
@@ -147,8 +122,6 @@ export default function App() {
           createplaceholder={createplaceholder}
           draggedTaskInfo={draggedTaskInfo}
           hoveredColumn={hoveredColumn}
-
-          // onTaskDragEnd={handleTaskDragEnd}
         />
         <KanbanColumn
           title="In Review"
@@ -159,8 +132,6 @@ export default function App() {
           createplaceholder={createplaceholder}
           draggedTaskInfo={draggedTaskInfo}
           hoveredColumn={hoveredColumn}
-
-          // onTaskDragEnd={handleTaskDragEnd}
         />
         <KanbanColumn
           title="Done"
@@ -171,8 +142,6 @@ export default function App() {
           createplaceholder={createplaceholder}
           draggedTaskInfo={draggedTaskInfo}
           hoveredColumn={hoveredColumn}
-
-          // onTaskDragEnd={handleTaskDragEnd}
         />
       </div>
     </main>

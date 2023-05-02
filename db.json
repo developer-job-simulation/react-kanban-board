@@ -2,12 +2,12 @@
   "tasks": {
     "Backlog": [
       {
-        "id": "task2",
-        "name": "Design mockups"
-      },
-      {
         "id": "task1",
         "name": "Write specs"
+      },
+      {
+        "id": "task2",
+        "name": "Design mockups"
       }
     ],
     "In Progress": [

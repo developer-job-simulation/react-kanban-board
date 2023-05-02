@@ -10,8 +10,6 @@ interface KanbanColumnProps {
   createplaceholder: boolean;
   draggedTaskInfo: DraggedTaskInfo | null;
   hoveredColumn: Column | null;
-
-  // onTaskDragEnd: () => void;
 }
 
 export default function KanbanColumn({
@@ -23,12 +21,8 @@ export default function KanbanColumn({
   createplaceholder,
   draggedTaskInfo,
   hoveredColumn,
-}: // onTaskDragEnd,
-
-KanbanColumnProps) {
-  useEffect(() => {
-    console.log(createplaceholder);
-  }, [createplaceholder]);
+}: KanbanColumnProps) {
+  useEffect(() => {}, [createplaceholder]);
 
   return (
     <div
@@ -46,7 +40,6 @@ KanbanColumnProps) {
             }`}
             draggable
             onDragStart={(e) => onTaskDragStart(task, title, e)}
-            // onDragEnd={onTaskDragEnd}
           >
             {task.name}
           </li>
