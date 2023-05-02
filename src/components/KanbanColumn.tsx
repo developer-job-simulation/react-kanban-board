@@ -32,7 +32,7 @@ export default function KanbanColumn({
     >
       <h2 className="font-bold mb-2">{title}</h2>
       <ul>
-        {tasks.map((task) => (
+        {tasks && tasks.map((task) => (
           <li
             key={task.id}
             className={`bg-white p-2 rounded cursor-pointer mb-2 shadow ${

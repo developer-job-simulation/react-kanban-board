@@ -22,7 +22,16 @@ export default function App() {
   }, []);
   const [createplaceholder, setCreatePlaceholder] = useState<boolean>(false);
 
-  let tempo_item = JSON.parse(localStorage.getItem('initialdata') || '');
+  let empty_local_data = {
+    Backlog: [],
+    'In Progress': [],
+    'In Review': [],
+    Done: [],
+  };
+
+  let tempo_item =
+    JSON.parse(localStorage.getItem('initialdata') || 'false') ||
+    empty_local_data;
 
   const [draggedTaskInfo, setDraggedTaskInfo] =
     useState<DraggedTaskInfo | null>(null);
