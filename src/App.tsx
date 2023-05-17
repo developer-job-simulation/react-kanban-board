@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import KanbanColumn from "./components/KanbanColumn";
 import { Column, DraggableTask, DraggedTaskInfo, Task } from "./types";
+import { fetchKanbanTasks, updateKanbanTasks } from "./api";
 
 export default function App() {
   const [kanbanColumns, setKanbanColumns] = useState<Record<Column, DraggableTask[]>>({
@@ -11,41 +12,101 @@ export default function App() {
     Done: [],
   });
 
-  // Fetch Tasks
   useEffect(() => {
-    // TODO: Pull state from json-server
-    // Hint: You may want to use the fetchTasks function from api/index.tsx
+    fetchKanbanTasks()
+      .then((tasks) => {
+        const columns: Record<Column, DraggableTask[]> = {
+          Backlog: [],
+          "In Progress": [],
+          "In Review": [],
+          Done: [],
+        };
+        Object.entries(tasks).forEach(([status, tasks]) => {
+          columns[status as Column] = tasks as DraggableTask[];
+        });
+        setKanbanColumns(columns);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
-  // Hint: You will need these states for dragging and dropping tasks
   const [draggedTaskInfo, setDraggedTaskInfo] = useState<DraggedTaskInfo | null>(null);
   const [hoveredColumn, setHoveredColumn] = useState<Column | null>(null);
 
   const handleTaskDragStart = (task: Task, column: Column) => {
-    // TODO: Implement functionality for when the drag starts
-  };
+    setDraggedTaskInfo({ task: task, column: column })
+    setHoveredColumn(column)
+  }
 
   const handleTaskDragOver = (e: React.DragEvent, column: Column) => {
     e.preventDefault();
-    // TODO: Implement functionality for when an item is being dragged over a column
-    // Hint: Remember to check if the item is being dragged over a new column
+    if (hoveredColumn !== column) {
+      setHoveredColumn(column);
+    }
+    if (draggedTaskInfo && hoveredColumn) {
+      const { task, column: fromColumn } = draggedTaskInfo;
+      const newColumns = { ...kanbanColumns };
+      for (const col in newColumns) {
+        if (col !== column && col !== fromColumn) {
+          newColumns[col] = newColumns[col].filter((t) => t.id !== task.id);
+        }
+      }
+      if (!newColumns[hoveredColumn].some((t) => t.id === task.id)) {
+        newColumns[hoveredColumn] = [
+          ...newColumns[hoveredColumn],
+          { ...task, isDragging: true },
+        ];
+      }
+      setKanbanColumns(newColumns);
+    }
   };
+
 
   const handleTaskDrop = (column: Column) => {
-    // TODO: Implement functionality for when the item is dropped
-    // Hint: Make sure to handle the cases when the item is dropped in the same column or in a new column
-  };
+    if (draggedTaskInfo) {
+      const { task, column: fromColumn } = draggedTaskInfo
+      const newColumns = { ...kanbanColumns }
+
+      newColumns[column] = newColumns[column].filter((t) => t.id !== task.id)
+      newColumns[fromColumn] = newColumns[fromColumn].filter(
+        (t) => t.id !== task.id
+      )
+
+      newColumns[column].push({ ...task, isDragging: false })
+
+      setKanbanColumns(newColumns)
+      updateKanbanTasks(newColumns)
+
+      setDraggedTaskInfo(null)
+      setHoveredColumn(null)
+    }
+  }
 
   const getTasksForColumn = (column: Column): DraggableTask[] => {
-    // TODO: Handle the bug where card dragged over itself shows duplicate
-    // Hint: Consider how you can use the dragInfo and overColumn states to prevent this
-    return [{ id: "1", name: "Task 1", isDragging: false }];
-  };
+    return kanbanColumns[column]
+  }
 
   const handleTaskDragEnd = () => {
-    // TODO: Implement functionality for when the drag ends
-    // Hint: Remember to handle the case when the item is released back to its current column
-  };
+    if (draggedTaskInfo) {
+      const { task, column: fromColumn } = draggedTaskInfo
+      const newColumns = { ...kanbanColumns }
+
+      for (const col in newColumns) {
+        if (col != fromColumn) {
+          const index = newColumns[col].findIndex((t) => t.id === task.id)
+          if (index !== -1) {
+            newColumns[col].splice(index, 1)
+          }
+        }
+      }
+
+      setKanbanColumns(newColumns)
+
+      setDraggedTaskInfo(null)
+      setHoveredColumn(null)
+    }
+  }
 
   return (
     <main className="overflow-x-auto">

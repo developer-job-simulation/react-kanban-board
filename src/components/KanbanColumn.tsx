@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Column, DraggableTask, Task } from "../types";
 
 interface KanbanColumnProps {
@@ -18,6 +18,7 @@ export default function KanbanColumn({
   onTaskDrop,
   onTaskDragEnd,
 }: KanbanColumnProps) {
+
   return (
     <div
       className="flex flex-col w-1/4 min-w-[300px] bg-gray-200 rounded p-4"
