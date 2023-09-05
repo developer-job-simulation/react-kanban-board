@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import KanbanColumn from "./components/KanbanColumn";
 import { Column, DraggableTask, DraggedTaskInfo, Task } from "./types";
-import { fetchKanbanTasks } from "./api";
+import { fetchKanbanTasks, updateKanbanTasks } from "./api";
 
 export default function App()
 {
@@ -57,7 +57,7 @@ export default function App()
 
   const handleTaskDrop = (column: Column) =>
   {
-  
+
     // TODO: Implement functionality for when the item is dropped
     // Hint: Make sure to handle the cases when the item is dropped in the same column or in a new column
   };
@@ -72,16 +72,18 @@ export default function App()
     // return [{ id: "1", name: "Task 1", isDragging: false }];
   };
 
-  const handleTaskDragEnd = () =>
+  const handleTaskDragEnd = async () =>
   {
     console.log("handleTaskDragEnd");
-    const originalColumns = { ...kanbanColumns };
+    const newColumns = { ...kanbanColumns };
 
-    originalColumns[draggedTaskInfo!.column] = originalColumns[draggedTaskInfo!.column].filter(task => task.id !== draggedTaskInfo?.task.id);
-    originalColumns[hoveredColumn!].push(draggedTaskInfo!.task);
+    newColumns[draggedTaskInfo!.column] = newColumns[draggedTaskInfo!.column].filter(task => task.id !== draggedTaskInfo?.task.id);
+    newColumns[hoveredColumn!].push(draggedTaskInfo!.task);
 
-
-    setKanbanColumns(originalColumns);
+    const data = await updateKanbanTasks(newColumns);
+    console.log("updateKanbanTasks: " + data);
+    
+    setKanbanColumns(newColumns);
 
 
     // TODO: Implement functionality for when the drag ends

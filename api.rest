@@ -1,0 +1,20 @@
+@base = http://localhost:3001
+
+###
+GET {{base}}/tasks 
+
+###
+POST {{base}}/tasks 
+Content-Type: application/json
+
+{
+    "nilar": "win htut"
+}
+
+###
+PUT {{base}}/tasks 
+Content-Type: application/json
+
+{
+    "nilar": "win htut"
+}
