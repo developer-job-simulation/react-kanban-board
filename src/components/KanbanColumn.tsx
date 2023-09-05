@@ -24,7 +24,7 @@ export default function KanbanColumn({
       onDragOver={(e) => onTaskDragOver(e, title)}
       onDrop={() => onTaskDrop(title)}
     >
-      <h2 className="font-bold mb-2">{title}</h2>
+      <h2 className="mb-2 font-bold">{title}</h2>
       <ul>
         {tasks.map((task) => (
           <li
