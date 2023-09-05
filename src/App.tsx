@@ -35,13 +35,21 @@ export default function App()
 
   const handleTaskDragStart = (task: Task, column: Column) =>
   {
+    setDraggedTaskInfo({ task, column });
     // TODO: Implement functionality for when the drag starts
   };
 
   const handleTaskDragOver = (e: React.DragEvent, column: Column) =>
   {
     e.preventDefault();
-    console.log("handleTaskDragOver", column, e.target);
+
+    setHoveredColumn(column);
+    console.log("handleTaskDrop", column);
+    // const originalColumns = { ...kanbanColumns };
+    // originalColumns[hoveredColumn!].push({ ...draggedTaskInfo!.task, isDragging: true });
+
+
+    // setKanbanColumns(originalColumns);
 
     // TODO: Implement functionality for when an item is being dragged over a column
     // Hint: Remember to check if the item is being dragged over a new column
@@ -49,8 +57,7 @@ export default function App()
 
   const handleTaskDrop = (column: Column) =>
   {
-    console.log("handleTaskDrop", column);
-
+  
     // TODO: Implement functionality for when the item is dropped
     // Hint: Make sure to handle the cases when the item is dropped in the same column or in a new column
   };
@@ -68,6 +75,14 @@ export default function App()
   const handleTaskDragEnd = () =>
   {
     console.log("handleTaskDragEnd");
+    const originalColumns = { ...kanbanColumns };
+
+    originalColumns[draggedTaskInfo!.column] = originalColumns[draggedTaskInfo!.column].filter(task => task.id !== draggedTaskInfo?.task.id);
+    originalColumns[hoveredColumn!].push(draggedTaskInfo!.task);
+
+
+    setKanbanColumns(originalColumns);
+
 
     // TODO: Implement functionality for when the drag ends
     // Hint: Remember to handle the case when the item is released back to its current column
