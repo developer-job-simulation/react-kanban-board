@@ -22,7 +22,7 @@ You will learn and gain experience with:
 ## How to start working
 
 1. Fork this repo and clone it locally.
-1. Install the dependencies by running npm i
+1. Install the dependencies by running `npm i`
 1. Run the app locally by running `npm run dev:client` to start the frontend, and `npm run dev:server` to start the backend.
 1. Open `localhost:3000` in your browser to see the current state of the project.
 1. Fix all the issues (hints are provided as TODO comments in the code)
