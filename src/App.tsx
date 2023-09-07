@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import KanbanColumn from "./components/KanbanColumn";
 import { Column, DraggableTask, DraggedTaskInfo, Task } from "./types";
+import { fetchKanbanTasks, updateKanbanTasks } from "./api";
 
 export default function App() {
-  const [kanbanColumns, setKanbanColumns] = useState<Record<Column, DraggableTask[]>>({
+  const [kanbanColumns, setKanbanColumns] = useState<
+    Record<Column, DraggableTask[]>
+  >({
     Backlog: [],
     "In Progress": [],
     "In Review": [],
@@ -13,43 +16,90 @@ export default function App() {
 
   // Fetch Tasks
   useEffect(() => {
-    // TODO: Pull state from json-server
-    // Hint: You may want to use the fetchTasks function from api/index.tsx
+    const fetchData = async () => {
+      try {
+        const tasks = await fetchKanbanTasks();
+        setKanbanColumns(tasks);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  // Hint: You will need these states for dragging and dropping tasks
-  const [draggedTaskInfo, setDraggedTaskInfo] = useState<DraggedTaskInfo | null>(null);
+  const [draggedTaskInfo, setDraggedTaskInfo] =
+    useState<DraggedTaskInfo | null>(null);
   const [hoveredColumn, setHoveredColumn] = useState<Column | null>(null);
 
+  // set the dragged task and the initial column
   const handleTaskDragStart = (task: Task, column: Column) => {
-    // TODO: Implement functionality for when the drag starts
+    setDraggedTaskInfo({ task, column });
   };
 
+  // drag the task and check if its hovered over a new column
   const handleTaskDragOver = (e: React.DragEvent, column: Column) => {
     e.preventDefault();
-    // TODO: Implement functionality for when an item is being dragged over a column
-    // Hint: Remember to check if the item is being dragged over a new column
+
+    // check if the item is being dragged over a new column
+    if (draggedTaskInfo && draggedTaskInfo.column !== column) {
+      setHoveredColumn(column);
+    }
   };
 
+  // dropping the task, check if its a new column and update states
   const handleTaskDrop = (column: Column) => {
-    // TODO: Implement functionality for when the item is dropped
-    // Hint: Make sure to handle the cases when the item is dropped in the same column or in a new column
+    if (draggedTaskInfo) {
+      const { task, column: sourceColumn } = draggedTaskInfo;
+
+      // Check if the task was dropped into a new column
+      if (sourceColumn !== column) {
+        // Remove the task from the source column
+        const updatedSourceColumn = kanbanColumns[sourceColumn].filter(
+          (t) => t.id !== task.id
+        );
+
+        // Add the task to the destination column
+        const updatedDestinationColumn = [...kanbanColumns[column], task];
+
+        // Update the state with the new column data
+        setKanbanColumns({
+          ...kanbanColumns,
+          [sourceColumn]: updatedSourceColumn,
+          [column]: updatedDestinationColumn,
+        });
+
+        updateKanbanTasks({
+          ...kanbanColumns,
+          [sourceColumn]: updatedSourceColumn,
+          [column]: updatedDestinationColumn,
+        });
+      }
+
+      setDraggedTaskInfo(null);
+      setHoveredColumn(null);
+    }
   };
 
   const getTasksForColumn = (column: Column): DraggableTask[] => {
-    // TODO: Handle the bug where card dragged over itself shows duplicate
-    // Hint: Consider how you can use the dragInfo and overColumn states to prevent this
-    return [{ id: "1", name: "Task 1", isDragging: false }];
+    // Handle the bug where card dragged over itself shows duplicate
+    if (draggedTaskInfo && hoveredColumn === column) {
+      // If a task is being dragged over this column, exclude it from the list
+      return kanbanColumns[column].filter(
+        (task) => task.id !== draggedTaskInfo.task.id
+      );
+    } else {
+      return kanbanColumns[column];
+    }
   };
 
-  const handleTaskDragEnd = () => {
-    // TODO: Implement functionality for when the drag ends
-    // Hint: Remember to handle the case when the item is released back to its current column
-  };
+  const handleTaskDragEnd = () => {};
 
   return (
     <main className="overflow-x-auto">
-      <h1 className="text-left text-4xl font-bold p-10 pb-0">Codebase Mentor Kanban Board</h1>
+      <h1 className="text-left text-4xl font-bold p-10 pb-0">
+        Codebase Mentor Kanban Board
+      </h1>
       <div className="flex justify-between p-10 gap-x-4 min-w-max">
         <KanbanColumn
           title="Backlog"

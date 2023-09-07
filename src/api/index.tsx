@@ -1,10 +1,38 @@
 const apiUrl = "http://localhost:3001";
 
 export const fetchKanbanTasks = async () => {
-  // TODO: Implement functionality to fetch tasks from the server
+  try {
+    const response = await fetch(`${apiUrl}/tasks`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch tasks");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const updateKanbanTasks = async (tasks: any) => {
-  // TODO: Save the new order of the items when tasks are modified to the server
-  // Hint: You may want to use the fetch API with a "PUT" method
+  try {
+    const response = await fetch(`${apiUrl}/tasks`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(tasks),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update tasks");
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
